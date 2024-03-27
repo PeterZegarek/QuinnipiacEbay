@@ -16,5 +16,11 @@ public class qBay {
         "\\  \\ \\____ \\  \n \\ \\___\\_\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\/\\_____\\ \n  " + 
         "\\/___/_/   \\/_____/   \\/_/\\/_/   \\/_____/ \n                                            ");
         System.out.println("For all of your buying and selling needs");
+
+
+        // test item shown below:
+        // put in price, name of item, category, student name, student email
+        // Item item = new Item(10, "Car", "Automobiles", "Peter Zegarek", "pzegarek@qu.edu");
+        // System.out.println(item);
     }
 }
