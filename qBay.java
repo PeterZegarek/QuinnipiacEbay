@@ -71,7 +71,9 @@ public class qBay {
         } while(!loginValid);
 
         //Personal greeting
-        System.out.println("\nGreetings " + userEmail.substring(0, userEmail.indexOf('.')));
+        System.out.println("\nGreetings, " + 
+        userEmail.substring(0, 1).toUpperCase() +
+        userEmail.substring(1, userEmail.indexOf('.')));
 
 
         // test item shown below:
