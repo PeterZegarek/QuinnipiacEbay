@@ -16,6 +16,15 @@ public class Item {
         this.studentEmail = studentEmail;
     }
 
+    // Get name of item
+    public String getName() {
+        return name;
+    }
+
+    // Get price of item
+    public int getPrice() {
+        return price;
+    }
 
     // This allows you to call print on the Item and it will print out neatly
     @Override
