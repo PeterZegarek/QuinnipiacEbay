@@ -16,6 +16,10 @@ public class Item {
         this.studentEmail = studentEmail;
     }
 
+    public Item(int price2, String name2, String category2) {
+        //TODO Auto-generated constructor stub
+    }
+
     // Get name of item
     public String getName() {
         return name;
@@ -24,6 +28,11 @@ public class Item {
     // Get price of item
     public int getPrice() {
         return price;
+    }
+
+    // get the catagory of the item 
+    public String getCategory() {
+        return category;
     }
 
     // This allows you to call print on the Item and it will print out neatly
