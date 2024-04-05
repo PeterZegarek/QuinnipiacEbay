@@ -51,7 +51,7 @@ public class qBay {
 
             //Ask for login information
             System.out.println("\nPlease enter your email:\t");
-            userEmail = scan.nextLine();
+            userEmail = scan.nextLine().toLowerCase();
             System.out.println("Please enter your password:\t");
             userPW = scan.nextLine();
 
@@ -59,7 +59,7 @@ public class qBay {
             for(int i = 0; i < studentLogins.length; i++) {
 
                 //Validate email
-                if(userEmail.equals(studentLogins[i][0].toLowerCase())) {
+                if(userEmail.equals(studentLogins[i][0])) {
 
                     //Validate associated password
                     if(userPW.equals(studentLogins[i][1])) {
