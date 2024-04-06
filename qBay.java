@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 /*
  * CSC-109 Challenge1
@@ -10,14 +9,17 @@ import java.util.Scanner;
 
 
 public class qBay {
-
-    //Default users
-    private static final String[][] studentLogins = {{"jean.lafrance@qu.edu", "1234"}, {"cn@qu.edu", "125"}, {"peter.zegarek@qu.edu", "bestpwrd"}};
+    // Student login information.
+    private static final String[][] studentLogins = {{"test.", "test"}, {"jean.lafrance@qu.edu", "1234"}, {"connor.nylund@qu.edu", "password"}, {"peter.zegarek@qu.edu", "bestpwrd"}};
+    // static list of already existing items
+    private static ArrayList<Item> items = new ArrayList<Item>();
+    // static cart
+    private static Cart cart = new Cart();
+    // Scanner
     private static final Scanner scanner = new Scanner(System.in);
 
-    private String userEmail;                               //User entered email
-    private String userName;                                //user name
-    private List<Item> itemsForSale = new ArrayList<>();    //List of items being sold on marketplace
+    private static String userEmail;      //User entered email
+    private static String userName;       //user name
 
     public static void main(String args[]) {
         qBay market = new qBay();
@@ -25,14 +27,14 @@ public class qBay {
     }
 
     public void start() {
-        boolean quit = false;
+        boolean quit = false;;
 
         //Populate sell list with test values
-        itemsForSale.add(new Item(15, "Intro to GIT", "Textbook", "John", "john.smith@quinnipiac.edu"));
-        itemsForSale.add(new Item(80, "TV", "Electronics", "Rick", "rick.sanchez@quinnipiac.edu"));
-        itemsForSale.add(new Item(50, "golf club", "Sports", "Tiger", "Tiger.woods@quinnipiac.edu"));
-        itemsForSale.add(new Item(3500, "Car", "Transportation", "Peter", "peter.zegarek@quinnipiac.edu"));
-        itemsForSale.add(new Item(500, "laptop", "Electronics", "Bill", "bill.gates@quinnipiac.edu"));
+        items.add(new Item(15, "Intro to GIT", "Textbook", "John", "john.smith@quinnipiac.edu"));
+        items.add(new Item(80, "TV", "Electronics", "Rick", "rick.sanchez@quinnipiac.edu"));
+        items.add(new Item(50, "golf club", "Sports", "Tiger", "Tiger.woods@quinnipiac.edu"));
+        items.add(new Item(3500, "Car", "Transportation", "Peter", "peter.zegarek@quinnipiac.edu"));
+        items.add(new Item(500, "laptop", "Electronics", "Bill", "bill.gates@quinnipiac.edu"));
 
         welcome();
 
@@ -49,7 +51,7 @@ public class qBay {
             //Call menuSelection() to get user input
             switch (menuSelection()) {
                 case 1:
-                    //TODO: buy();
+                    buy();
                     break;
                 case 2:
                     sell();
@@ -100,7 +102,7 @@ public class qBay {
         System.out.println("\nCurrent Items for Sale:");
 
         //Displays only items listed by user
-        for(Item item : itemsForSale) {
+        for(Item item : items) {
             if(item.getStudentName().toLowerCase().equals(userName.toLowerCase())) {
                 System.out.println(item);
                 itemsListed = true;
@@ -112,6 +114,7 @@ public class qBay {
         }
     }
 
+    //Adds new item to marketplace
     public void addNewItem() {
         System.out.print("Enter name of the item: ");
         String name = scanner.nextLine();
@@ -124,11 +127,12 @@ public class qBay {
         scanner.nextLine(); // Consume newline
 
         Item newItem = new Item(price, name, category, userName, userEmail);
-        itemsForSale.add(newItem);
+        items.add(newItem);
 
         System.out.println("Item added successfully.");
     }
 
+    //Displays menu. Returns user selection
     public int menuSelection() {
         System.out.println("\nPlease choce what you would like to do.");
         System.out.println("1. buy");
@@ -156,6 +160,7 @@ public class qBay {
         
     }
 
+    //Log in to application. Verification of user login details
     public void login() {
         Boolean loginValid = false;     //Used in login validation
         int loginAttempts = 0;          //Too many attempts will "Lock account"
@@ -203,7 +208,63 @@ public class qBay {
         System.out.println("\nGreetings, " + userName);
     }
 
+    //Log out of application
     public void logout() {
         System.out.println("\nThank you for using Quinnipiac Marketplace");
+        scanner.close();
+    }
+
+
+    // buy menu function
+    public static void buy(){
+
+        // this loop will be broken when go back to main menu is selected
+        while (true){
+            System.out.println("What would you like to buy? \nHere are our items on display:");
+
+            // print out the possible items
+            for (int counter = 0; counter < qBay.items.size(); counter++){
+                System.out.println("Item " + (counter+1) + ":");
+                System.out.println(qBay.items.get(counter).getName() + "\n");
+            }
+
+            // allow the user to select a certain one
+            System.out.println("If you want to know more about a certain item (or buy it), just type in the number of the item. Or type 0 to go to the Main Menu.");
+            int itemSelected = scanner.nextInt();
+            // if they selected 0 break the loop
+            if (itemSelected == 0){
+                break;
+            }
+            System.out.println(qBay.items.get(itemSelected-1));
+
+            System.out.println("Would you like to add this item to your cart? 1 for yes, 2 for no, or 0 to go to the main menu.");
+            int addToCart = scanner.nextInt();
+            // if they type in zero, break the loop
+            if (addToCart == 0){
+                break;
+            }
+            // if it's a 1, add it to the cart
+            else if (addToCart == 1){
+                System.out.println("You have added " + qBay.items.get(itemSelected-1).getName() + " to your cart.");
+                qBay.cart.add(qBay.items.get(itemSelected-1));
+                // sleep the thread quick so they can see that
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            // we'll just assume invalid input means they didn't want to buy it
+            else {
+                System.out.println("No problem. We hope you can find something else.");
+                // sleep thread quick
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+        }
     }
 }
