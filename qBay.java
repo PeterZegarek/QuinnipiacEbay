@@ -11,8 +11,13 @@ import java.util.Scanner;
 
 public class qBay {
 
-    private Scanner scanner = new Scanner(System.in);
-    private List<Item> itemsForSale = new ArrayList<>();
+    //Default users
+    private static final String[][] studentLogins = {{"jean.lafrance@qu.edu", "1234"}, {"cn@qu.edu", "125"}, {"peter.zegarek@qu.edu", "bestpwrd"}};
+    private static final Scanner scanner = new Scanner(System.in);
+
+    private String userEmail;                               //User entered email
+    private String userName;                                //user name
+    private List<Item> itemsForSale = new ArrayList<>();    //List of items being sold on marketplace
 
     public static void main(String args[]) {
         qBay market = new qBay();
@@ -20,23 +25,141 @@ public class qBay {
     }
 
     public void start() {
-        //Array of student login information.
-        String[][] studentLogins = {{"jean.lafrance@qu.edu", "1234"}, {"cn@qu.edu", "125"}, {"peter.zegarek@qu.edu", "bestpwrd"}};
+        boolean quit = false;
 
-        String userEmail;               //User entered email for login
-        String userPW;                  //User entered password for login
-        Boolean loginValid = false;     //Used in login validation
-        int loginAttempts = 0;          //Too many attempts will "Lock account"
+        //Populate sell list with test values
+        itemsForSale.add(new Item(15, "Intro to GIT", "Textbook", "John", "john.smith@quinnipiac.edu"));
+        itemsForSale.add(new Item(80, "TV", "Electronics", "Rick", "rick.sanchez@quinnipiac.edu"));
+        itemsForSale.add(new Item(50, "golf club", "Sports", "Tiger", "Tiger.woods@quinnipiac.edu"));
+        itemsForSale.add(new Item(3500, "Car", "Transportation", "Peter", "peter.zegarek@quinnipiac.edu"));
+        itemsForSale.add(new Item(500, "laptop", "Electronics", "Bill", "bill.gates@quinnipiac.edu"));
 
-        Scanner scan = new Scanner(System.in);
+        welcome();
 
-        //Welcome message with beautiful ASCII art
+        //Ask for login information
+        System.out.println("\nPlease enter your email:\t");
+        userEmail = scanner.nextLine().toLowerCase();
+        userName = userEmail.substring(0, 1).toUpperCase() +
+            userEmail.substring(1, userEmail.indexOf('.'));
+
+        login();
+
+        //Application loop
+        while(!quit) {
+            //Call menuSelection() to get user input
+            switch (menuSelection()) {
+                case 1:
+                    //TODO: buy();
+                    break;
+                case 2:
+                    sell();
+                    break;
+                case 3:
+                    quit = true;
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+
+        logout();
+    }
+
+    public void sell() {
+        while (true) {
+            System.out.println("\nSell Menu:");
+            System.out.println("1. See current items for sale");
+            System.out.println("2. Add a new item for sale");
+            System.out.println("3. Back to main menu");
+
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            System.out.println();
+
+            switch (choice) {
+                case 1:
+                    displayItemsForSale();
+                    break;
+                case 2:
+                    addNewItem();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+
+    //Displays user's current items up for sale
+    public void displayItemsForSale() {
+        boolean itemsListed = false;
+
+        System.out.println("\nCurrent Items for Sale:");
+
+        //Displays only items listed by user
+        for(Item item : itemsForSale) {
+            if(item.getStudentName().toLowerCase().equals(userName.toLowerCase())) {
+                System.out.println(item);
+                itemsListed = true;
+            }
+        }
+
+        if(!itemsListed) {
+            System.out.println("\tNo listed items");
+        }
+    }
+
+    public void addNewItem() {
+        System.out.print("Enter name of the item: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter category of the item: ");
+        String category = scanner.nextLine();
+
+        System.out.print("Enter price of the item: ");
+        int price = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        Item newItem = new Item(price, name, category, userName, userEmail);
+        itemsForSale.add(newItem);
+
+        System.out.println("Item added successfully.");
+    }
+
+    public int menuSelection() {
+        System.out.println("\nPlease choce what you would like to do.");
+        System.out.println("1. buy");
+        System.out.println("2. sell");
+        System.out.println("3. logout");
+        System.out.print("Enter your choice: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println();
+
+        return choice;
+
+    }
+
+    //Welcome message with beautiful ASCII art
+    public void welcome() {
         System.out.println("\nWelcome to Quinnipiac Marketplace!");
         System.out.println(" ______     ______     ______     __  __    \n/\\  __ \\   " + 
         "/\\  == \\   /\\  __ \\   /\\ \\_\\ \\   \n\\ \\ \\/\\_\\  \\ \\  __<   \\ \\  __ " + 
         "\\  \\ \\____ \\  \n \\ \\___\\_\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\/\\_____\\ \n  " + 
         "\\/___/_/   \\/_____/   \\/_/\\/_/   \\/_____/ \n                                            ");
         System.out.println("For all of your buying and selling needs");
+        
+    }
+
+    public void login() {
+        Boolean loginValid = false;     //Used in login validation
+        int loginAttempts = 0;          //Too many attempts will "Lock account"
+        String userPW;                  //User entered password
 
         //Login loop
         do {
@@ -57,17 +180,15 @@ public class qBay {
 
             loginAttempts++;
 
-            //Ask for login information
-            System.out.println("\nPlease enter your email:\t");
-            userEmail = scan.nextLine();
+            //Ask for user password
             System.out.println("Please enter your password:\t");
-            userPW = scan.nextLine();
+            userPW = scanner.nextLine();
 
             //check user entered information
             for(int i = 0; i < studentLogins.length; i++) {
 
                 //Validate email
-                if(userEmail.equals(studentLogins[i][0].toLowerCase())) {
+                if(userEmail.equals(studentLogins[i][0])) {
 
                     //Validate associated password
                     if(userPW.equals(studentLogins[i][1])) {
@@ -79,90 +200,10 @@ public class qBay {
         } while(!loginValid);
 
         //Personal greeting
-        System.out.println("\nGreetings, " + 
-        userEmail.substring(0, 1).toUpperCase() +
-        userEmail.substring(1, userEmail.indexOf('.')));
-        
-        System.out.println("\nPlease choce what you would like to do.");
-        System.out.println("1. buy");
-        System.out.println("2. sell");
-        System.out.println("3. logout");
-        System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            switch (choice) {
-                case 1:
-                    //buy();
-                    break;
-                case 2:
-                    sell();
-                    break;
-                case 3:
-                    //logout();
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please enter a valid option.");
-            }
-    }
-        // test item shown below:
-        // put in price, name of item, category, student name, student email
-        // Item item = new Item(10, "Car", "Automobiles", "Peter Zegarek", "pzegarek@qu.edu");
-        // System.out.println(item);
-
-        
-public void sell() {
-        while (true) {
-            System.out.println("\nSell Menu:");
-            System.out.println("1. See current items for sale");
-            System.out.println("2. Add a new item for sale");
-            System.out.println("3. Back to main menu");
-
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            switch (choice) {
-                case 1:
-                    displayItemsForSale();
-                    break;
-                case 2:
-                    addNewItem();
-                    break;
-                case 3:
-                    start();
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please enter a valid option.");
-            }
-        }
+        System.out.println("\nGreetings, " + userName);
     }
 
-    public void displayItemsForSale() {
-        if (itemsForSale.isEmpty()) {
-            System.out.println("\nNo items currently for sale.");
-        } else {
-            System.out.println("\nCurrent Items for Sale:");
-            for (Item item : itemsForSale) {
-                System.out.println(item);
-            }
-        }
-    }
-
-    public void addNewItem() {
-        System.out.print("Enter name of the item: ");
-        String name = scanner.nextLine();
-
-        System.out.print("Enter category of the item: ");
-        String category = scanner.nextLine();
-
-        System.out.print("Enter price of the item: ");
-        int price = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        Item newItem = new Item(price, name, category);
-        itemsForSale.add(newItem);
-
-        System.out.println("Item added successfully.");
+    public void logout() {
+        System.out.println("\nThank you for using Quinnipiac Marketplace");
     }
 }
