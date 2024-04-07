@@ -18,8 +18,8 @@ public class qBay {
     // Scanner
     private static final Scanner scanner = new Scanner(System.in);
 
-    private static String userEmail;      //User entered email
-    private static String userName;       //user name
+    private String userEmail;      //User entered email
+    private String userName;       //user name
 
     public static void main(String args[]) {
         qBay market = new qBay();
@@ -38,9 +38,11 @@ public class qBay {
 
         welcome();
 
-        //Ask for login information
+        //Ask for user email
         System.out.println("\nPlease enter your email:\t");
         userEmail = scanner.nextLine().toLowerCase();
+
+        //Get user's name from email
         userName = userEmail.substring(0, 1).toUpperCase() +
             userEmail.substring(1, userEmail.indexOf('.'));
 
@@ -56,9 +58,9 @@ public class qBay {
                 case 2:
                     sell();
                     break;
-                case 3:
+                case 0:
                     quit = true;
-                    return;
+                    break;
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
@@ -67,12 +69,13 @@ public class qBay {
         logout();
     }
 
+    //Sell menu and user selection
     public void sell() {
         while (true) {
             System.out.println("\nSell Menu:");
             System.out.println("1. See current items for sale");
             System.out.println("2. Add a new item for sale");
-            System.out.println("3. Back to main menu");
+            System.out.println("0. Back to main menu");
 
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
@@ -87,7 +90,7 @@ public class qBay {
                 case 2:
                     addNewItem();
                     break;
-                case 3:
+                case 0:
                     return;
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
@@ -134,10 +137,10 @@ public class qBay {
 
     //Displays menu. Returns user selection
     public int menuSelection() {
-        System.out.println("\nPlease choce what you would like to do.");
+        System.out.println("\nMain Menu:");
         System.out.println("1. buy");
         System.out.println("2. sell");
-        System.out.println("3. logout");
+        System.out.println("0. logout");
         System.out.print("Enter your choice: ");
 
         int choice = scanner.nextInt();
@@ -146,7 +149,6 @@ public class qBay {
         System.out.println();
 
         return choice;
-
     }
 
     //Welcome message with beautiful ASCII art
@@ -157,7 +159,6 @@ public class qBay {
         "\\  \\ \\____ \\  \n \\ \\___\\_\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\/\\_____\\ \n  " + 
         "\\/___/_/   \\/_____/   \\/_/\\/_/   \\/_____/ \n                                            ");
         System.out.println("For all of your buying and selling needs");
-        
     }
 
     //Log in to application. Verification of user login details
@@ -210,7 +211,16 @@ public class qBay {
 
     //Log out of application
     public void logout() {
-        System.out.println("\nThank you for using Quinnipiac Marketplace");
+        System.out.println("Thank you for using Quinnipiac Marketplace");
+        System.out.println("You have successfully logged out");
+
+        try {
+            Thread.sleep(500);
+        }
+        catch(InterruptedException e) {
+            System.out.println("Exception error");
+        }
+
         scanner.close();
     }
 
@@ -225,7 +235,7 @@ public class qBay {
             // print out the possible items
             for (int counter = 0; counter < qBay.items.size(); counter++){
                 System.out.println("Item " + (counter+1) + ":");
-                System.out.println(qBay.items.get(counter).getName() + "\n");
+                System.out.println(qBay.items.get(counter).getName() + "\n-----");
             }
 
             // allow the user to select a certain one
@@ -264,7 +274,6 @@ public class qBay {
                     e.printStackTrace();
                 }
             }
-            
         }
     }
 }
