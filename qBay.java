@@ -14,7 +14,7 @@ public class qBay {
     // static list of already existing items
     private static ArrayList<Item> items = new ArrayList<Item>();
     // static cart
-    private static Cart cart = new Cart();
+    public static Cart cart = new Cart(items);
     // Scanner
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -57,14 +57,30 @@ public class qBay {
                     sell();
                     break;
                 case 3:
-                    quit = true;
-                    return;
+                    cart();
+                    break;
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
         }
 
         logout();
+    }
+
+    public void cart() {
+
+        if(cart.isEmpty()) {
+            System.out.println("No items to display");
+        }
+        else {
+            //Display cart
+            cart.display();
+
+            System.out.println("Proceed to checkout? (y/n)");
+            if(scanner.nextLine().equals("y")) {
+                cart.checkout();
+            }
+        }
     }
 
     public void sell() {
@@ -137,7 +153,7 @@ public class qBay {
         System.out.println("\nPlease choce what you would like to do.");
         System.out.println("1. buy");
         System.out.println("2. sell");
-        System.out.println("3. logout");
+        System.out.println("3. cart");
         System.out.print("Enter your choice: ");
 
         int choice = scanner.nextInt();

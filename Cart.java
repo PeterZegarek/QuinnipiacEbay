@@ -11,11 +11,16 @@ public class Cart {
     
     //Using arraylist as it can be modified as user selects new items
     private ArrayList<Item> cartItems;
+    private ArrayList<Item> items;
 
-    public Cart() {
+    public Cart(ArrayList<Item> items) {
         //Initialize arraylist
-        cartItems = new ArrayList<Item>();
+        this.cartItems = new ArrayList<Item>();
+        this.items = items;
+    }
 
+    public boolean isEmpty() {
+        return cartItems.size() == 0;
     }
 
     //Add item to cart
@@ -68,10 +73,11 @@ public class Cart {
         //Confirmation message
         System.out.println("\nPurchase confirmed");
 
+        //Remove items from buy list
+        for(Item item : cartItems) {
+            items.remove(item);
+        }
         //Clear cart
         this.clearCart();
-
-        //TODO: Remove items from buy list
-
     }
 }
