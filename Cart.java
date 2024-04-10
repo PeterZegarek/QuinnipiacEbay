@@ -47,8 +47,6 @@ public class Cart {
         //Trim arraylist size to only current items
         cartItems.trimToSize();
 
-        System.out.println();
-
         //Loop through ArrayList
         for(int i = 0; i < cartItems.size(); i++) {
 
